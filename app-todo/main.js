@@ -1,7 +1,5 @@
-window.onload = () => {
-    
+
     const todos = JSON.parse(localStorage.getItem("todos")) || [];//lo primero que hara la app es renderizar los 
-    //elementos que se encuentren dentro del arreglo todo
 
     const render = () => {
         const todoList = document.getElementById("todo-list");
@@ -30,40 +28,70 @@ window.onload = () => {
     form.onsubmit = (e) =>{//onsubmit es una funcion que captura el evento de click 
         e.preventDefault()
         const todo = document.getElementById("todo");
-        const todoText = todo.value;
-        todo.value = "";//vaciamos input
-        todos.push(todoText)//asignamos el valor de todo a todoText y lo asignamos a arreglo todos
-        actualizaTodos(todos)
-        render()
+        if(todo.value > ""){
+            const todoText = todo.value;
+            todo.value = "";//vaciamos input
+            todos.push(todoText)//asignamos el valor de todo a todoText y lo asignamos a arreglo todos
+            actualizaTodos(todos)
+            render()
+        }else(alert('El input esta vacio'))
+
     }
-}
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+const listLangths = []
+
 const formText = document.querySelector("#form-text-lenght");
 
 function capturarValor(param){
     let valorInput = param.value
-    console.log(valorInput);
+    listLangths.push(valorInput)
     quitarEspacios(valorInput)
+    renderList()
 }
 
 function quitarEspacios(param){
     let espacioString = param.trim()
-    console.log(espacioString)
     lengthText(espacioString)
 }
 
 function lengthText(param){
     let lengthInput = param.length;
-    console.log(lengthInput)
     renderValue(lengthInput);
 }
 
 function renderValue(param){
     console.log(`El length del string es ${param}`)
+    console.log(listLangths)
+    vaciarInput()
+}
+
+function renderList(param){
+    const listLangth = document.getElementById('list-length');
+    const listTemplate = listLangths.map(t => `<li>${t}</li>`)
+    listLangth.innerHTML = listTemplate.join("");
+    const elementos = document.querySelectorAll("#todo-list li");
+
+    elementos.forEach((li, indice) =>{
+        li.addEventListener("click", ()=>{
+            li.parentNode.removeChild(li);
+            todos.splice(indice,1);
+            actualizaTodos(listLangth)//Esta funcion actualiza el estado de el array
+            renderList()//actualiza las posiciones del array
+        })
+    })
+}
+
+function vaciarInput(){
+    const inputText = document.querySelector("#input-text");
+    inputText.value = "";
 }
 
 formText.onsubmit = (e) =>{
     e.preventDefault()
     const inputText = document.querySelector("#input-text");
-    capturarValor(inputText);
+    if(inputText.value > ""){
+        capturarValor(inputText)
+    }else(alert("El input esta vacio"))
+    
 }
 
